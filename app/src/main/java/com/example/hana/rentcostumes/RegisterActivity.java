@@ -95,6 +95,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         String uname = inputUsername.getText().toString();
         String password = inputPassword.getText().toString();
 
+
         // TODO: Implement your own signup logic here.
         firebaseAuth.createUserWithEmailAndPassword(email, password)
               .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
