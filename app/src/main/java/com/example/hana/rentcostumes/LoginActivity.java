@@ -31,6 +31,7 @@ public class LoginActivity extends Activity {
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     SessionActivity sessionActivity;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,94 +86,98 @@ public class LoginActivity extends Activity {
         });
     }
 
-        public void login() {
-            Log.d(TAG, "Login");
+    public void login() {
+        Log.d(TAG, "Login");
 
-            if (!validate()) {
-                onLoginFailed();
-                return;
-            }
-            btnLogin.setEnabled(false);
+        if (!validate()) {
+            onLoginFailed();
+            return;
+        }
+        btnLogin.setEnabled(false);
 
-            final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this, R.style.MyTheme_ProgressDialog_);
-            progressDialog.setIndeterminate(true);
-            progressDialog.setMessage("Authenticating...");
-            progressDialog.show();
+        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this, R.style.MyTheme_ProgressDialog_);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Authenticating...");
+        progressDialog.show();
 
-            String email = loginEmail.getText().toString();
-            String password = loginPassword.getText().toString();
+        String email = loginEmail.getText().toString();
+        String password = loginPassword.getText().toString();
 
-            if(email.equals("dimsar@gmail.com") && password.equals("dimsar")){
-                // TODO: Implement your own authentication logic here.
-
-                firebaseAuth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
-
-                                // If sign in fails, display a message to the user. If sign in succeeds
-                                // the auth state listener will be notified and logic to handle the
-                                // signed in user can be handled in the listener.
-                                if (!task.isSuccessful()) {
-                                    Log.w(TAG, "signInWithEmail:failed", task.getException());
-                                    Toast.makeText(LoginActivity.this, R.string.auth_failed,
-                                            Toast.LENGTH_SHORT).show();
-                                }
-
-                                // ...
-                            }
-                        });
-                // Dimas Sartika on 21/01/2017
-                new android.os.Handler().postDelayed(
-                        new Runnable() {
-                            public void run() {
-                                // On complete call either onLoginSuccess or onLoginFailed
-                                onLoginSuccess();
-                                progressDialog.dismiss();
-                            }
-                        }, 3000);
-            } else {
-                onLoginFailed();
-                progressDialog.dismiss();
-            }
-
+        Log.d(TAG, "signIn:" + email);
+        if (!validate()) {
+            return;
         }
 
-        public void onLoginSuccess() {
-            btnLogin.setEnabled(true);
-            sessionActivity.setPreferences(this, "status", "isLoggedIn");
-            Intent i = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(i);
-            finish();
+        // [START sign_in_with_email]
+        firebaseAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
+
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "signInWithEmail:failed", task.getException());
+                            Toast.makeText(LoginActivity.this, R.string.login_failed,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
+                        // [START_EXCLUDE]
+                        if (!task.isSuccessful()) {
+                            Toast.makeText(LoginActivity.this, R.string.login_failed,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            onLoginSuccess();
+                            // [END_EXCLUDE]
+                        }
+                        progressDialog.dismiss();
+                    }
+                });
+        // [END sign_in_with_email]
+
+    }
+
+
+
+    public void onLoginSuccess() {
+        Toast.makeText(LoginActivity.this, R.string.login_success,
+                Toast.LENGTH_SHORT).show();
+        btnLogin.setEnabled(true);
+        sessionActivity.setPreferences(this, "status", "isLoggedIn");
+        Intent i = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(i);
+        finish();
+    }
+
+    public void onLoginFailed() {
+        Toast.makeText(getBaseContext(), "Login Failed", Toast.LENGTH_LONG).show();
+        btnLogin.setEnabled(true);
+    }
+
+    public boolean validate() {
+        boolean valid = true;
+        String email = loginEmail.getText().toString();
+        String password = loginPassword.getText().toString();
+
+        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            loginEmail.setError("enter a valid email address");
+            valid = false;
+        } else {
+            loginEmail.setError(null);
         }
 
-        public void onLoginFailed() {
-            Toast.makeText(getBaseContext(), "Login Failed", Toast.LENGTH_LONG).show();
-            btnLogin.setEnabled(true);
+        if (password.isEmpty() || password.length() < 6 || password.length() > 10) {
+            loginPassword.setError("between 6 and 10 alphanumeric characters");
+            valid = false;
+        } else {
+            loginPassword.setError(null);
         }
 
-        public boolean validate() {
-            boolean valid = true;
-            String email = loginEmail.getText().toString();
-            String password = loginPassword.getText().toString();
-
-            if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                loginEmail.setError("enter a valid email address");
-                valid = false;
-            } else {
-                loginEmail.setError(null);
-            }
-
-            if (password.isEmpty() || password.length() < 6 || password.length() > 10) {
-                loginPassword.setError("between 6 and 10 alphanumeric characters");
-                valid = false;
-            } else {
-                loginPassword.setError(null);
-            }
-
-            return valid;
-        }
+        return valid;
+    }
 
     private void tombolback() {
         AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this);

@@ -49,6 +49,9 @@
     <string name="auth_failed">Sign Up Failed</string>
     <string name="auth_success">Sign Up Success</string>
 
+    <string name="login_failed">Log In Failed</string>
+    <string name="login_success">Log In Success</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
