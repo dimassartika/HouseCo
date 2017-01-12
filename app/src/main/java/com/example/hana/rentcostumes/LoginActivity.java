@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -13,7 +14,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 /**
  * Created by user pc on 26/10/2016.
@@ -23,7 +28,8 @@ public class LoginActivity extends Activity {
     private static final String TAG = RegisterActivity.class.getSimpleName();
     private Button btnLogin, btnLinkToRegister, btnLinkToForgotLogin;
     private EditText loginEmail, loginPassword;
-    private FirebaseAuth mFirebaseAuth;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
     SessionActivity sessionActivity;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -31,8 +37,23 @@ public class LoginActivity extends Activity {
         setContentView(R.layout.activity_login);
 
         //Get Firebase auth instance
-        mFirebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
         sessionActivity = new SessionActivity();
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                } else {
+                    // User is signed out
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                }
+                // ...
+            }
+        };
 
         loginEmail = (EditText) findViewById(R.id.email);
         loginPassword = (EditText) findViewById(R.id.password);
@@ -81,21 +102,40 @@ public class LoginActivity extends Activity {
             String email = loginEmail.getText().toString();
             String password = loginPassword.getText().toString();
 
-            if(email.equals("dimas@coba.com") && password.equals("dimas")){
+            if(email.equals("dimsar@gmail.com") && password.equals("dimsar")){
                 // TODO: Implement your own authentication logic here.
+
+                firebaseAuth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
+
+                                // If sign in fails, display a message to the user. If sign in succeeds
+                                // the auth state listener will be notified and logic to handle the
+                                // signed in user can be handled in the listener.
+                                if (!task.isSuccessful()) {
+                                    Log.w(TAG, "signInWithEmail:failed", task.getException());
+                                    Toast.makeText(LoginActivity.this, R.string.auth_failed,
+                                            Toast.LENGTH_SHORT).show();
+                                }
+
+                                // ...
+                            }
+                        });
+                // Dimas Sartika on 21/01/2017
                 new android.os.Handler().postDelayed(
                         new Runnable() {
                             public void run() {
                                 // On complete call either onLoginSuccess or onLoginFailed
                                 onLoginSuccess();
-                                // onLoginFailed();
                                 progressDialog.dismiss();
                             }
                         }, 3000);
             } else {
-                Toast.makeText(getApplicationContext(), "Salah", Toast.LENGTH_SHORT).show();
+                onLoginFailed();
+                progressDialog.dismiss();
             }
-
 
         }
 
@@ -108,7 +148,7 @@ public class LoginActivity extends Activity {
         }
 
         public void onLoginFailed() {
-            Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), "Login Failed", Toast.LENGTH_LONG).show();
             btnLogin.setEnabled(true);
         }
 
@@ -124,8 +164,8 @@ public class LoginActivity extends Activity {
                 loginEmail.setError(null);
             }
 
-            if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-                loginPassword.setError("between 4 and 10 alphanumeric characters");
+            if (password.isEmpty() || password.length() < 6 || password.length() > 10) {
+                loginPassword.setError("between 6 and 10 alphanumeric characters");
                 valid = false;
             } else {
                 loginPassword.setError(null);
@@ -160,6 +200,20 @@ public class LoginActivity extends Activity {
                 return true;
             default:
                 return super.onKeyDown(keyCode, event);
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        firebaseAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            firebaseAuth.removeAuthStateListener(mAuthListener);
         }
     }
 }

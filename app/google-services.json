@@ -1,27 +1,27 @@
 {
   "project_info": {
-    "project_number": "937793141201",
-    "firebase_url": "https://practiceadapter-master.firebaseio.com",
-    "project_id": "practiceadapter-master",
-    "storage_bucket": "practiceadapter-master.appspot.com"
+    "project_number": "662093885311",
+    "firebase_url": "https://houseco-90734.firebaseio.com",
+    "project_id": "houseco-90734",
+    "storage_bucket": "houseco-90734.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:937793141201:android:82a918576d55acc3",
+        "mobilesdk_app_id": "1:662093885311:android:df700aaf96c420dd",
         "android_client_info": {
-          "package_name": "com.example.pustikom.adapterplay"
+          "package_name": "com.example.hana.rentcostumes"
         }
       },
       "oauth_client": [
         {
-          "client_id": "937793141201-41ttu4r8afr6l8e39ahfoeafjjf6bpof.apps.googleusercontent.com",
+          "client_id": "662093885311-e3gctr747mnljo4m1j0ds664g4gjk3ii.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAicbqJg7dNSvqyeujT0AUFvxRJ6K6foq4"
+          "current_key": "AIzaSyDFOp2BFFRGAbK_Q4z3fU3sJd3HPWXGwHM"
         }
       ],
       "services": {
@@ -39,20 +39,82 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:937793141201:android:df700aaf96c420dd",
+        "mobilesdk_app_id": "1:662093885311:android:e8defb6c0d6004ba",
         "android_client_info": {
-          "package_name": "com.example.hana.rentcostumes"
+          "package_name": "com.example.dimassartika.login_application"
         }
       },
       "oauth_client": [
         {
-          "client_id": "937793141201-41ttu4r8afr6l8e39ahfoeafjjf6bpof.apps.googleusercontent.com",
+          "client_id": "662093885311-e3gctr747mnljo4m1j0ds664g4gjk3ii.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAicbqJg7dNSvqyeujT0AUFvxRJ6K6foq4"
+          "current_key": "AIzaSyDFOp2BFFRGAbK_Q4z3fU3sJd3HPWXGwHM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:662093885311:android:5b2d9fe5bbf10cb5",
+        "android_client_info": {
+          "package_name": "com.example.dimassartika.login_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "662093885311-e3gctr747mnljo4m1j0ds664g4gjk3ii.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFOp2BFFRGAbK_Q4z3fU3sJd3HPWXGwHM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:662093885311:android:d0d0cd6f46589d3f",
+        "android_client_info": {
+          "package_name": "com.example.dimassartika.loginapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "662093885311-e3gctr747mnljo4m1j0ds664g4gjk3ii.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFOp2BFFRGAbK_Q4z3fU3sJd3HPWXGwHM"
         }
       ],
       "services": {

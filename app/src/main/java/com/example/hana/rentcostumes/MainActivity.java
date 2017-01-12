@@ -65,11 +65,12 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    /*
+    private Boolean exit = false;
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent (this, MainActivity.class);
-        startActivity(intent);
+        if (exit){
+            finish();
+        }
 
 //        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 //        if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -78,7 +79,7 @@ public class MainActivity extends AppCompatActivity
 //            super.onBackPressed();
 //        }
     }
-    */
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

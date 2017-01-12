@@ -22,6 +22,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 /**
  * Created by user pc on 26/10/2016.
@@ -35,6 +36,8 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
     String list_gender [] = {"Gender", "Male", "Female"};
     private static final String TAG = "SignupActivity";
     private FirebaseAuth firebaseAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
 //
     @Override
     public void onBackPressed() {
@@ -62,6 +65,25 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
 
         firebaseAuth = FirebaseAuth.getInstance();
 
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    //Toast.makeText(RegisterActivity.this, "mmmmmmmmmmmmmmmmmmm", Toast.LENGTH_SHORT).show();
+                    // User is signed in
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                } else {
+                    // User is signed out
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                }
+                // ...
+            }
+        };
+
+
+
+
 //        ActionBar actionBar = getActionBar();
 //        if(actionBar!=null)
 //            actionBar.setDisplayHomeAsUpEnabled(false);
@@ -82,6 +104,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
             return;
         }
 
+
         //btnRegister.setEnabled(false);
 
         final ProgressDialog progressDialog = new ProgressDialog(RegisterActivity.this, R.style.MyTheme_ProgressDialog_);
@@ -101,18 +124,13 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
               .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                   @Override
                   public void onComplete(@NonNull Task<AuthResult> task) {
-                      if(task.isSuccessful()){
-                          new android.os.Handler().postDelayed(
-                                  new Runnable() {
-                                      public void run() {
-                                          // On complete call either onSignupSuccess or onSignupFailed
-                                          // depending on success
-                                          onSignupSuccess();
-                                          // onSignupFailed();
-                                          progressDialog.dismiss();
-                                      }
-                                  }, 2000);
+                      Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
+                      if (task.isSuccessful()) {
+                          Toast.makeText(RegisterActivity.this, R.string.auth_success,
+                                  Toast.LENGTH_SHORT).show();
+                          startActivity(new Intent(getApplicationContext(),MainActivity.class));
                       }
+                      progressDialog.dismiss();
                   }
               });
     }
@@ -123,6 +141,7 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
         Intent i = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(i);
         setResult(RESULT_OK, null);
+
         finish();
     }
 
@@ -169,8 +188,8 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
             inputUsername.setError(null);
         }
 
-        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            inputPassword.setError("between 4 and 10 alphanumeric characters");
+        if (password.isEmpty() || password.length() < 6 || password.length() > 10) {
+            inputPassword.setError("between 6 and 10 alphanumeric characters");
             valid = false;
         } else {
             inputPassword.setError(null);
@@ -198,5 +217,19 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        firebaseAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            firebaseAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 }
